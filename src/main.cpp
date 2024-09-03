@@ -1,3 +1,8 @@
+#include "drivers/led.h"
+#include "drivers/colors.h"
+
+#include <map>
+#include <string>
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
@@ -6,33 +11,72 @@
 #include "WS2812.pio.h" // This header file gets produced during compilation from the WS2812.pio file
 #include "drivers/logging/logging.h"
 
-#define LED_PIN 14
+#define PICO_LED_PIN 14
+#define NUMBER_OF_LEDS 12
+#define ON_TIME 50
+#define OFF_TIME 50
 
 int main()
 {
     stdio_init_all();
 
-    // Initialise PIO0 to control the LED chain
-    uint pio_program_offset = pio_add_program(pio0, &ws2812_program);
-    ws2812_program_init(pio0, 0, pio_program_offset, LED_PIN, 800000, false);
-    uint32_t led_data [1];
+    PIO pio = pio0;
+    uint offset = pio_add_program(pio, &ws2812_program);
+    LED led(PICO_LED_PIN, pio, 0, offset);
 
-    for (;;) {
-        // Test the log system
-        log(LogLevel::INFORMATION, "Hello world");
+    for (;;)
+    {
 
-        // Turn on the first LED to be a certain colour
-        uint8_t red = 0;
-        uint8_t green = 0;
-        uint8_t blue = 255;
-        led_data[0] = (red << 24) | (green << 16) | (blue << 8);
-        pio_sm_put_blocking(pio0, 0, led_data[0]);
-        sleep_ms(500);
+        for (int i = 0; i < 12; ++i)
+        {
+            // Loop red
+            led.turn_led_on(i, RED);
+            led.update_led();
+            sleep_ms(ON_TIME);
+        }
+        for (int i = 0; i < 12; ++i)
+        {
+            // Loop green
+            led.turn_led_on(i, GREEN);
+            led.update_led();
+            sleep_ms(ON_TIME);
+        }
+        for (int i = 0; i < 12; ++i)
+        {
+            // Loop blue
+            led.turn_led_on(i, BLUE);
+            led.update_led();
+            sleep_ms(ON_TIME);
+        }
+        for (int i = 0; i < 12; ++i)
+        {
+            // Loop off
+            led.turn_led_off(i);
+            led.update_led();
+            sleep_ms(OFF_TIME);
+        }
+        for (int i = 0; i < 12; ++i)
+        {
+            led.turn_led_on(i, RED);
+        }
+        led.update_led();
+        sleep_ms(250);
 
-        // Set the first LED off 
-        led_data[0] = 0;
-        pio_sm_put_blocking(pio0, 0, led_data[0]);
-        sleep_ms(500);
+        // Set all LEDs to green
+        for (int i = 0; i < 12; ++i)
+        {
+            led.turn_led_on(i, GREEN);
+        }
+        led.update_led();
+        sleep_ms(250);
+
+        // Set all LEDs to blue
+        for (int i = 0; i < 12; ++i)
+        {
+            led.turn_led_on(i, BLUE);
+        }
+        led.update_led();
+        sleep_ms(250);
     }
 
     return 0;
