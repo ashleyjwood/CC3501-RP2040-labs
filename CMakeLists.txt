@@ -31,8 +31,8 @@ if(CrossCompiling)
     target_sources(labs 
         PUBLIC
         src/main.cpp
-        src/drivers/logging/logging.cpp
         src/drivers/led.cpp
+        src/drivers/logging/logging.cpp
     )
     target_include_directories(labs
         PUBLIC 
