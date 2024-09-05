@@ -2,6 +2,7 @@
 
 #include <cstdint> // Ensure this is included for uint32_t
 #include "hardware/pio.h" // Include for PIO
+#include <cstdarg> // For variadic functions
 
 #define NUMBER_OF_LEDS 12
 
@@ -27,4 +28,10 @@ public:
 
     // Function to update the LEDs with the current data
     void update_led();
+
+    // Variadic function to update multiple LEDs at once
+    void set_multiple_leds(...);
+
+    void shift_led_colors_right(int led_index);
+    void shift_led_colors_left(int led_index);
 };
