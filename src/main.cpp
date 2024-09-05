@@ -35,6 +35,7 @@ int main()
         uint8_t blue = 25;
         uint32_t color = (red << 24) | (green << 16) | (blue << 8);
 
+<<<<<<< HEAD
         for (int i = 0; i < NUMBER_OF_LEDS; i++)
         {
             led_data[i] = color;
@@ -47,6 +48,81 @@ int main()
             pio_sm_put_blocking(pio0, 0, led_data[i]);
         }
         sleep_ms(ON_TIME);
+=======
+        // // Set all LEDs to green
+        // for (int i = 0; i < 12; ++i)
+        // {
+        //     led.turn_led_on(i, GREEN);
+        // }
+        // led.update_led();
+        // sleep_ms(250);
+
+        // // Set all LEDs to blue
+        // for (int i = 0; i < 12; ++i)
+        // {
+        //     led.turn_led_on(i, BLUE);
+        // }
+        // led.update_led();
+        // sleep_ms(250);
+
+        // led.turn_led_off_all();
+        // led.update_led();
+        // sleep_ms(250);
+
+        // Initialize the LED colors
+        // led.set_multiple_leds(0, CYAN);
+        // // led.set_multiple_leds(3, MAGENTA, 4, MAGENTA, 5, MAGENTA);
+        // // led.set_multiple_leds(6, YELLOW, 7, YELLOW, 8, YELLOW);
+        // // led.set_multiple_leds(9, PURPLE, 10, PURPLE, 11, PURPLE);
+        // led.update_led();
+        // sleep_ms(100);
+
+        // Shift the CYAN color to the right across the LEDs
+        // led.set_multiple_leds(0, RED);
+        // for (int i = 0; i < NUMBER_OF_LEDS - 1; ++i) // Adjust the loop count as needed
+        // {
+        //     led.shift_led_colors_right(i); // Shift colors right by one LED
+        //     sleep_ms(250);
+        // }
+
+        // sleep_ms(100); // Pause before shifting back
+
+        // // Shift the CYAN color back to the left across the LEDs
+        // for (int i = NUMBER_OF_LEDS - 1; i > 0; --i) // Adjust the loop count as needed
+        // {
+        //     led.shift_led_colors_left(i); // Shift colors left by one LED
+        //     sleep_ms(250);
+        // }
+        // led.turn_led_off_all();
+        // sleep_ms(250);
+
+        led.set_multiple_leds(0, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(1, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(2, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(3, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(4, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(5, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(6, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(7, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(8, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(9, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(10, RED);
+        busy_wait_ms(100);
+        led.set_multiple_leds(11, RED);
+        busy_wait_ms(100);
+        led.turn_led_off_all();
+        busy_wait_ms(100);
+>>>>>>> 6e307c2e51207220662766b733acb24bf5b4c22a
 
         gpio_put(SERVO_PIN, 0);
         // Turn off all LEDs
