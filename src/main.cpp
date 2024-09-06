@@ -1,5 +1,6 @@
 #include "drivers/led.h"
 #include "drivers/colors.h"
+#include "pico/rand.h"
 
 #include <map>
 #include <string>
@@ -15,128 +16,66 @@
 #define NUMBER_OF_LEDS 12
 #define ON_TIME 50
 #define OFF_TIME 50
+#define test_led_1 4
+
+// uint32_t random_color = get_rand_32();
 
 int main()
 {
     stdio_init_all();
-
     PIO pio = pio0;
     uint offset = pio_add_program(pio, &ws2812_program);
-    LED led(PICO_LED_PIN, pio, 0, offset);
+    LED led(PICO_LED_PIN, pio, 0, offset, NUMBER_OF_LEDS);
 
-    for (;;)
-    {
+    // 0. Reset LED
+    led.set_led(test_led_1, OFF);
+    sleep_ms(50);
+    led.update_led();
+    sleep_ms(50);
 
-        // for (int i = 0; i < 12; ++i)
-        // {
-        //     // Loop red
-        //     led.turn_led_on(i, RED);
-        //     led.update_led();
-        //     sleep_ms(ON_TIME);
-        // }
-        // for (int i = 0; i < 12; ++i)
-        // {
-        //     // Loop green
-        //     led.turn_led_on(i, GREEN);
-        //     led.update_led();
-        //     sleep_ms(ON_TIME);
-        // }
-        // for (int i = 0; i < 12; ++i)
-        // {
-        //     // Loop blue
-        //     led.turn_led_on(i, BLUE);
-        //     led.update_led();
-        //     sleep_ms(ON_TIME);
-        // }
-        // for (int i = 0; i < 12; ++i)
-        // {
-        //     // Loop off
-        //     led.turn_led_off(i);
-        //     led.update_led();
-        //     sleep_ms(OFF_TIME);
-        // }
-        // for (int i = 0; i < 12; ++i)
-        // {
-        //     led.turn_led_on(i, RED);
-        // }
-        // led.update_led();
-        // sleep_ms(250);
+    // 1. Set a color but don't update
+    led.set_led(test_led_1, CYAN);
+    sleep_ms(50);
 
-        // // Set all LEDs to green
-        // for (int i = 0; i < 12; ++i)
-        // {
-        //     led.turn_led_on(i, GREEN);
-        // }
-        // led.update_led();
-        // sleep_ms(250);
+    // 2. Print the current color (should be 0 since no update yet)
+    uint32_t current_color = led.get_last_updated_color(test_led_1);
+    uint32_t pending_color = led.get_pending_color(test_led_1);
+    printf("Current color before update: 0x%06X\n", current_color);
+    printf("Pending color before update: 0x%06X\n", pending_color);
+    led.print_led_status(test_led_1);
+    sleep_ms(50);
 
-        // // Set all LEDs to blue
-        // for (int i = 0; i < 12; ++i)
-        // {
-        //     led.turn_led_on(i, BLUE);
-        // }
-        // led.update_led();
-        // sleep_ms(250);
+    // 3. Update the LED
+    led.update_led();
+    sleep_ms(50);
 
-        // led.turn_led_off_all();
-        // led.update_led();
-        // sleep_ms(250);
+    // 4. Print the color after the update (should match RED)
+    current_color = led.get_last_updated_color(test_led_1);
+    printf("Current color after first update: 0x%06X\n", current_color);
+    sleep_ms(50);
 
-        // Initialize the LED colors
-        // led.set_multiple_leds(0, CYAN);
-        // // led.set_multiple_leds(3, MAGENTA, 4, MAGENTA, 5, MAGENTA);
-        // // led.set_multiple_leds(6, YELLOW, 7, YELLOW, 8, YELLOW);
-        // // led.set_multiple_leds(9, PURPLE, 10, PURPLE, 11, PURPLE);
-        // led.update_led();
-        // sleep_ms(100);
+    // 5. Set a new color but don't update
+    // uint32_t random_color = get_rand_32();
+    led.set_led(test_led_1, YELLOW);
+    sleep_ms(50);
 
-        // Shift the CYAN color to the right across the LEDs
-        // led.set_multiple_leds(0, RED);
-        // for (int i = 0; i < NUMBER_OF_LEDS - 1; ++i) // Adjust the loop count as needed
-        // {
-        //     led.shift_led_colors_right(i); // Shift colors right by one LED
-        //     sleep_ms(250);
-        // }
+    // 6. Print the current color (should still be RED, not updated yet)
+    current_color = led.get_last_updated_color(test_led_1);
+    printf("Current color before second update: 0x%06X\n", current_color);
+    sleep_ms(50);
+    pending_color = led.get_pending_color(test_led_1);
+    printf("Pending color before second update: 0x%06X\n", pending_color);
+    sleep_ms(50);
 
-        // sleep_ms(100); // Pause before shifting back
+    // 7. Update the LED with the new color
+    led.update_led();
+    sleep_ms(50);
 
-        // // Shift the CYAN color back to the left across the LEDs
-        // for (int i = NUMBER_OF_LEDS - 1; i > 0; --i) // Adjust the loop count as needed
-        // {
-        //     led.shift_led_colors_left(i); // Shift colors left by one LED
-        //     sleep_ms(250);
-        // }
-        // led.turn_led_off_all();
-        // sleep_ms(250);
-
-        led.set_multiple_leds(0, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(1, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(2, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(3, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(4, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(5, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(6, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(7, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(8, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(9, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(10, RED);
-        busy_wait_ms(100);
-        led.set_multiple_leds(11, RED);
-        busy_wait_ms(100);
-        led.turn_led_off_all();
-        busy_wait_ms(100);
-
-    }
+    // 8. Print the new color after the second update (should now be GREEN)
+    current_color = led.get_last_updated_color(test_led_1);
+    printf("Current color after second update: 0x%06X\n", current_color);
+    led.print_led_status(test_led_1);
+    sleep_ms(50);
 
     return 0;
 }

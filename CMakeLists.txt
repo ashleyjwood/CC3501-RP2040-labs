@@ -52,6 +52,7 @@ if(CrossCompiling)
     # Add the standard library to the build
     target_link_libraries(labs
         pico_stdlib
+        pico_rand
         hardware_spi
         hardware_i2c
         hardware_dma

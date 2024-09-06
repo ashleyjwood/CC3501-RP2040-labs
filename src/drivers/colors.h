@@ -25,3 +25,4 @@
 #define SALMON      0xFA807200
 #define PLUM        0xDDA0DD00
 #define CHOCOLATE   0xD2691E00
+#define OFF         0x00000000
