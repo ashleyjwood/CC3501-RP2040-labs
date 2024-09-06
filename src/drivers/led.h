@@ -1,21 +1,20 @@
 #pragma once
 
-#include <cstdint> // Ensure this is included for uint32_t
+#include <cstdint>        // Ensure this is included for uint32_t
 #include "hardware/pio.h" // Include for PIO
-#include <cstdarg> // For variadic functions
+#include <cstdarg>        // For variadic functions
 
-// #define NUMBER_OF_LEDS 12
-
-class LED {
+class LED
+{
     uint ledPin;
     PIO pio;
     uint stateMachine;
     uint programOffset;
-    uint32_t* led_data;
-    uint32_t* last_updated_color;
-    uint32_t* pending_color;
-    uint32_t* current_color;
-    bool* is_led_set;
+    uint32_t *led_data;
+    uint32_t *last_updated_color;
+    uint32_t *pending_color;
+    uint32_t *current_color;
+    bool *is_led_set;
     int NUMBER_OF_LEDS;
 
 public:
@@ -31,15 +30,25 @@ public:
     uint32_t get_last_updated_color(int led_index);
     uint32_t get_pending_color(int led_index);
 
-    // Variadic function to update multiple LEDs at once
-    // void set_led(...);
+    // Function to set a single LED
     void set_led(int led_index, uint32_t color);
+
+    // Variadic template function to update multiple LEDs
+    template <typename... Args>
+    void set_multiple(int led_index, uint32_t color, Args... args)
+    {
+        set_led(led_index, color);
+        set_multiple(args...);
+    }
+
+    // Base case to terminate the recursion
+    void set_multiple(int led_index, uint32_t color)
+    {
+        set_led(led_index, color); // Base case for recursion
+    }
 
     void print_led_status(int led_index);
 
     void shift_led_colors_right(int led_index);
     void shift_led_colors_left(int led_index);
-
-    uint32_t get_led_data(int led_index);
-
 };

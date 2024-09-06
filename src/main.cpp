@@ -17,6 +17,7 @@
 #define ON_TIME 50
 #define OFF_TIME 50
 #define test_led_1 4
+#define test_led_2 5
 
 // uint32_t random_color = get_rand_32();
 
@@ -34,7 +35,7 @@ int main()
     sleep_ms(50);
 
     // 1. Set a color but don't update
-    led.set_led(test_led_1, CYAN);
+    led.set_multiple(test_led_1, CYAN, test_led_2, RED);
     sleep_ms(50);
 
     // 2. Print the current color (should be 0 since no update yet)
@@ -43,6 +44,7 @@ int main()
     printf("Current color before update: 0x%06X\n", current_color);
     printf("Pending color before update: 0x%06X\n", pending_color);
     led.print_led_status(test_led_1);
+    led.print_led_status(test_led_2);
     sleep_ms(50);
 
     // 3. Update the LED

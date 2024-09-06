@@ -12,7 +12,7 @@ LED::LED(uint ledPin, PIO pioInstance, uint sm, uint offset, int NUMBER_OF_LEDS)
     led_data = new uint32_t[NUMBER_OF_LEDS];           // Allocate memory for the LED data
     last_updated_color = new uint32_t[NUMBER_OF_LEDS]; // Stores last applied colors
     pending_color = new uint32_t[NUMBER_OF_LEDS];
-    is_led_set = new bool[NUMBER_OF_LEDS];             // Allocate memory for the LED state
+    is_led_set = new bool[NUMBER_OF_LEDS]; // Allocate memory for the LED state
     for (int i = 0; i < NUMBER_OF_LEDS; ++i)
     {
         led_data[i] = 0;           // Initialize all LEDs to off
@@ -51,23 +51,6 @@ uint32_t LED::get_pending_color(int led_index)
     pending_color[led_index] = led_data[led_index]; // Store the pending color
     return pending_color[led_index] >> 8;
 }
-
-// void LED::set_led(...)
-// {
-//     va_list args;
-//     va_start(args, args); // Initialize the va_list
-
-//     while (true)
-//     {
-//         int led_index = va_arg(args, int);
-
-//         int color = va_arg(args, int); // Fetch the color
-//         led_data[led_index] = color;   // Update the LED data
-//         is_led_set[led_index] = true;  // Update the LED state
-//     }
-
-//     va_end(args); // Clean up the va_list
-// }
 
 void LED::set_led(int led_index, uint32_t color)
 {
