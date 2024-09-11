@@ -51,4 +51,6 @@ public:
 
     void shift_led_colors_right(int led_index);
     void shift_led_colors_left(int led_index);
+
+    uint32_t convert_hsv_rgb(uint16_t hue, float saturation, float value);
 };

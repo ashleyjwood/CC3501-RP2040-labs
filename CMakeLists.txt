@@ -78,6 +78,7 @@ else()
     target_sources(labs 
         PUBLIC
         src/main.cpp
+        src/lab7.cpp
         src/drivers/logging/logging.cpp
         tests/mocks/pico/stdlib.cpp
         tests/mocks/pico/time.cpp

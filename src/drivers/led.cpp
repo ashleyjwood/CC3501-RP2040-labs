@@ -5,6 +5,7 @@
 #include "WS2812.pio.h"
 #include <cstdarg>
 #include <cstdio>
+#include <cmath>
 
 LED::LED(uint ledPin, PIO pioInstance, uint sm, uint offset, int NUMBER_OF_LEDS)
     : ledPin(ledPin), pio(pioInstance), stateMachine(sm), programOffset(offset), NUMBER_OF_LEDS(NUMBER_OF_LEDS)
@@ -99,4 +100,56 @@ void LED::shift_led_colors_left(int led_index)
     led_data[led_index] = 0;                       // Turn off the original LED
 
     update_led(); // Apply the changes to the LEDs
+}
+
+uint32_t LED::convert_hsv_rgb(uint16_t hue, float saturation, float value)
+{
+    float c = (value * saturation);
+    float hue_sector = hue / 60.0;
+    float x = c * (1 - fabs(fmod(hue_sector, 2.0f) - 1));
+    float red_float = 0;
+    float green_float = 0;
+    float blue_float = 0;
+    switch ((int)hue_sector)
+    {
+    case 0:
+        red_float = c;
+        green_float = x;
+        blue_float = 0;
+        break;
+    case 1:
+        red_float = x;
+        green_float = c;
+        blue_float = 0;
+        break;
+    case 2:
+        red_float = 0;
+        green_float = c;
+        blue_float = x;
+        break;
+    case 3:
+        red_float = 0;
+        green_float = x;
+        blue_float = c;
+        break;
+    case 4:
+        red_float = x;
+        green_float = 0;
+        blue_float = c;
+        break;
+    case 5:
+        red_float = c;
+        green_float = 0;
+        blue_float = x;
+        break;
+    default:
+        break;
+    }
+    float m = value - c;
+    red_float += m, green_float += m, blue_float += m;
+    uint8_t red = red_float * 255;
+    uint8_t green = green_float * 255;
+    uint8_t blue = blue_float * 255;
+    uint32_t rgb_colour = (red << 24) | (green << 16) | (blue << 8);
+    return rgb_colour;
 }
