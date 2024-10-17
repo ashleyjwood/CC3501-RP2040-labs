@@ -1,10 +1,17 @@
 #pragma once
 
-#include <cstdint>        // Ensure this is included for uint32_t
-#include "hardware/pio.h" // Include for PIO
-#include <cstdarg>        // For variadic functions
+#include "pico/stdlib.h"
+#include "hardware/gpio.h"
+#include "hardware/pio.h"
+#include "WS2812.pio.h"
+#include <cstdarg>
+#include <cstdio>
+#include <cmath>
+#include <cstdint>
+#include <cstdlib>
+#include "arm_math.h"
 
-class LED
+class WS2812
 {
     uint ledPin;
     PIO pio;
@@ -12,14 +19,11 @@ class LED
     uint programOffset;
     uint32_t *led_data;
     uint32_t *last_updated_color;
-    uint32_t *pending_color;
-    uint32_t *current_color;
-    bool *is_led_set;
-    int NUMBER_OF_LEDS;
+    uint number_of_leds;
 
 public:
     // Constructor
-    LED(uint ledPin, PIO pioInstance, uint sm, uint offset, int NUMBER_OF_LEDS);
+    WS2812(uint ledPin, uint number_of_leds);
 
     // Function to turn off all LEDs
     void turn_led_off_all();
@@ -31,7 +35,7 @@ public:
     uint32_t get_pending_color(int led_index);
 
     // Function to set a single LED
-    void set_led(int led_index, uint32_t color);
+    void set_led(uint led_index, uint32_t color);
 
     // Variadic template function to update multiple LEDs
     template <typename... Args>
@@ -47,10 +51,15 @@ public:
         set_led(led_index, color); // Base case for recursion
     }
 
-    void print_led_status(int led_index);
+    int shift_led_colors_right(int led_index);
+    int shift_led_colors_left(int led_index);
 
-    void shift_led_colors_right(int led_index);
-    void shift_led_colors_left(int led_index);
+    uint32_t convert_hsv_to_rgb(uint16_t hue, float saturation, float value);
 
-    uint32_t convert_hsv_rgb(uint16_t hue, float saturation, float value);
+    void simulate_fire();
+
+    void update_leds_based_on_samples(uint32_t *led_data, q15_t *samples);
+
+    void update_leds_based_on_pitch(uint32_t *led_data, q15_t *samples, int sampling_rate);
+
 };

@@ -27,11 +27,35 @@ if(CrossCompiling)
     # Initialise the Raspberry Pi Pico SDK
     pico_sdk_init()
 
+    # Set up CMSIS-DSP
+    set(CMSISCORE "${CMAKE_CURRENT_LIST_DIR}/lib/CMSIS_5/CMSIS/Core")
+    # set options for which parts of CMSIS-DSP are to be included
+    set(BASICMATH ON)
+    set(COMPLEXMATH ON)
+    set(CONTROLLER OFF)
+    set(FASTMATH OFF)
+    set(FILTERING OFF)
+    set(MATRIX OFF)
+    set(STATISTICS OFF)
+    set(SUPPORT OFF)
+    set(TRANSFORM ON)
+    set(SVM OFF)
+    set(BAYES OFF)
+    set(DISTANCE OFF)
+    set(INTERPOLATION OFF)
+    set(QUATERNIONMATH OFF)
+    set(CONFIGTABLE ON)
+    set(RFFT_Q15_1024 ON) # which FFT constants are hard-coded into the app
+    add_subdirectory(lib/CMSIS-DSP/Source bin_dsp)
+
+
     add_executable(labs)
     target_sources(labs 
         PUBLIC
         src/main.cpp
-        src/drivers/led.cpp
+        src/drivers/WS2812/WS2812.cpp
+        src/drivers/LIS3DH/LIS3DH.cpp
+        src/drivers/S08OB381-026/S08OB381-026.cpp
         src/drivers/logging/logging.cpp
     )
     target_include_directories(labs
@@ -62,6 +86,8 @@ if(CrossCompiling)
         hardware_watchdog
         hardware_clocks
         hardware_pwm
+        hardware_adc
+        CMSISDSP
     )
 
     pico_add_extra_outputs(labs)
@@ -78,7 +104,9 @@ else()
     target_sources(labs 
         PUBLIC
         src/main.cpp
-        src/lab7.cpp
+        src/drivers/WS2812/WS2812.cpp
+        src/drivers/LIS3DH/LIS3DH.cpp
+        src/drivers/S08OB381-026/S08OB381-026.cpp
         src/drivers/logging/logging.cpp
         tests/mocks/pico/stdlib.cpp
         tests/mocks/pico/time.cpp
